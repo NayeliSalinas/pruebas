@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Predicción de Tiempo de Llegada</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            margin-top: 50px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 25px;
+            width: 100%;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #resultado {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Predicción de Tiempo de Llegada</h1>
+        <form id="formulario">
+            <label for="distancia">Distancia (km):</label>
+            <input type="number" id="distancia" required>
+
+            <label for="velocidad">Velocidad promedio (km/h):</label>
+            <input type="number" id="velocidad" required>
+
+            <label for="trafico">Nivel de tráfico (0 a 10):</label>
+            <input type="number" id="trafico" min="0" max="10" required>
+
+            <label for="clima">Condición climática:</label>
+            <select id="clima">
+                <option value="0">Soleado</option>
+                <option value="1">Lluvia</option>
+                <option value="2">Nieve</option>
+            </select>
+
+            <label for="terreno">Tipo de terreno:</label>
+            <select id="terreno">
+                <option value="0">Carretera</option>
+                <option value="1">Ciudad</option>
+                <option value="2">Montaña</option>
+            </select>
+
+            <button type="button" onclick="enviarFormulario()">Calcular</button>
+        </form>
+
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        function enviarFormulario() {
+            const data = {
+                distancia: document.getElementById("distancia").value,
+                velocidad: document.getElementById("velocidad").value,
+                trafico: document.getElementById("trafico").value,
+                clima: document.getElementById("clima").value,
+                terreno: document.getElementById("terreno").value
+            };
+
+            fetch('/predecir', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(resp => resp.json())
+            .then(res => {
+                document.getElementById("resultado").innerText =
+                    "Tiempo estimado: " + res.tiempo_estimado + " minutos";
+            });
+        }
+    </script>
+</body>
+</html>
